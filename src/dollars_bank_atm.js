@@ -1,5 +1,5 @@
 const { timeStamp, print5Stamps } = require('./customer_account');
-
+const chalk = require('chalk');
 const prompt = require("prompt-sync")();
 
 var allAccounts = [];
@@ -7,24 +7,24 @@ var allAccounts = [];
 module.exports = {
     createAccount: function () {
 
-        console.log("\n+-------------------------------+\n" + "| Enter details for new account |\n"
-        + "+-------------------------------+\n")
+        console.log(chalk.blue("\n+-------------------------------+\n" + "| Enter details for new account |\n"
+        + "+-------------------------------+\n"))
         
         const regex = new RegExp("^(?=.*[0-9])" + "(?=.*[a-z])(?=.*[A-Z])" + "(?=.*[@#$%^&+=])" + "(?=\\S+$).{8,20}$");
         
 
-        const custName = prompt("Enter Customer Name: ");
-        const custAddr = prompt("Enter Customer Address: ");
-        const custNum = prompt("Enter Customer Number: ");
-        const custID = prompt("Enter Customer ID: ");
-        var custPass = prompt("Enter Customer Password (8 character minimum With Lower, Upper, & Special): ");
+        const custName = prompt(chalk.blue("Enter Customer Name: "));
+        const custAddr = prompt(chalk.blue("Enter Customer Address: "));
+        const custNum = prompt(chalk.blue("Enter Customer Number: "));
+        const custID = prompt(chalk.blue("Enter Customer ID: "));
+        var custPass = prompt(chalk.blue("Enter Customer Password (8 character minimum With Lower, Upper, & Special): "));
         if(!regex.test(custPass))
         do{
           console.log("Password does not meet criteria, please try again.")
           custPass = prompt("Enter Customer Password (8 character minimum With Lower, Upper, & Special): ");
         }while(!regex.test(custPass))
 
-        const amount = parseFloat(prompt("Enter Initial Amount: "));
+        const amount = parseFloat(prompt(chalk.blue("Enter Initial Amount: ")));
 
         var customer = {"name":custName, "address":custAddr, "phone":custNum, "ID":custID, "password":custPass}
         var savingAccount = {"amount": amount}
@@ -53,19 +53,20 @@ module.exports = {
         var found = false;
 
         do{
-        var username = prompt("\nUser ID: ");
-        var password = prompt("Password: ")
+        var username = prompt(chalk.yellow("User ID: "));
+        var password = prompt(chalk.yellow("Password: "))
         
         for (let i = 0; i < allAccounts.length; i++) {
         if(username == allAccounts[i].customer.ID && password == allAccounts[i].customer.password){
-            console.log("Account Found!");
+            console.log(chalk.green("Account Found!"));
             loggedCust = allAccounts[i];
             found = true;
             break;
         }}
 
-        if(found == false)
-        console.log("Invalid Credentials, please try again.")
+        if(found == false){
+        console.log(chalk.red("Invalid Credentials, please try again."));
+        }
 
       }while(found == false)
 
@@ -74,61 +75,72 @@ module.exports = {
 
     custMenu: function(loggedAccount){
 
-        var custMenuChoice = prompt("Please make a choice: ");
+        var custMenuChoice = prompt(chalk.cyan("Please make a choice: "));
 
         switch(custMenuChoice) {
             case '1':
-              console.log("\nDeposit for account: " + loggedAccount.customer.ID);
-              console.log("Current balance: " + loggedAccount.savingAccount.amount);
-              var deposit = parseFloat(prompt("Enter an amount to deposit: "));
+              console.log(chalk.green("\nDeposit for account: " + loggedAccount.customer.ID));
+              console.log(chalk.green("Current balance: $" + loggedAccount.savingAccount.amount));
+              var deposit = parseFloat(prompt(chalk.green("Enter an amount to deposit: ")));
               loggedAccount.savingAccount.amount += deposit;
-              console.log("Your Current Total is: " + loggedAccount.savingAccount.amount);
+              console.log(chalk.green("Your Current Total is: $" + loggedAccount.savingAccount.amount));
               
-              var transType = "Deposit of " + deposit + " occurred at: ";
+              var transType = chalk.green("Deposit of $" + deposit + " occurred at: ");
               timeStamp(transType);
 
               break;
           
             case '2':
-              console.log("\nWithdrawal for account: " + loggedAccount.customer.ID);
-              console.log("Current balance: " + loggedAccount.savingAccount.amount);
-              var withdraw = parseFloat(prompt("Enter an amount to withdraw: "));
+              console.log(chalk.green("\nWithdrawal for account: " + loggedAccount.customer.ID));
+              console.log(chalk.green("Current balance: $" + loggedAccount.savingAccount.amount));
+              var withdraw = parseFloat(prompt(chalk.green("Enter an amount to withdraw: ")));
+
               if(withdraw <= loggedAccount.savingAccount.amount){
               loggedAccount.savingAccount.amount -= withdraw;
-              }
-              else {console.log("\nOperation Failed: Not enough funds to withdraw amount")}
-
-              console.log("Your Current Total is: " + loggedAccount.savingAccount.amount);
-
-              var transType = "Withdrawal of " + withdraw + " occurred at: ";
+              var transType = chalk.green("Withdrawal of $" + withdraw + " occurred at: ");
               timeStamp(transType);
+              }
+              else {console.log(chalk.red("\nOperation Failed: Not enough funds to withdraw amount."))}
+
+              console.log(chalk.green("Your Current Total is: $" + loggedAccount.savingAccount.amount));
+
               break;
           
             case '3':
               transCust = {}
               found = false;
-              console.log("\nTransfer for account: " + loggedAccount.customer.ID);
-              transID = prompt("Enter the user you want to transfer funds to: ");
+
+              do{
+              console.log(chalk.green("\nTransfer for account: " + loggedAccount.customer.ID));
+              transID = prompt(chalk.green("Enter the user you want to transfer funds to: "));
               for (let i = 0; i < allAccounts.length; i++) {
                 if(transID == allAccounts[i].customer.ID){
-                    console.log("Match Found!");
+                    console.log(chalk.yellow("Match Found!"));
                     found = true;
                     transCust = allAccounts[i];
                     break;
                 }
             }
                 if(found == false){
-                    console.log("Account not found.");
+                    console.log(chalk.red("Account not found."));
                 }
+              }while(found == false);
 
-                transAmount = parseFloat(prompt("How much would you like to transfer?"));
+              transAmount = parseFloat(prompt(chalk.green("How much would you like to transfer: ")));
+
+              if(transAmount <= loggedAccount.savingAccount.amount){
                 loggedAccount.savingAccount.amount -= transAmount;
                 transCust.savingAccount.amount += transAmount;
 
-                console.log("You have transfered: " + transAmount + "$");
-                console.log("\nYou have $" + loggedAccount.savingAccount.amount + " leftover in your account.");
-                console.log(transCust.customer.ID + " has $" + transCust.savingAccount.amount + " leftover in their account.");
+                console.log(chalk.cyan("You have transferred: $" + transAmount));
+                console.log(chalk.cyan("\nYou have $" + loggedAccount.savingAccount.amount + " leftover in your account."));
+                console.log(chalk.cyan(transCust.customer.ID + " has $" + transCust.savingAccount.amount + " leftover in their account."));
               
+                var transType = chalk.green("Transferred $" + transAmount + " to " + transCust.customer.ID + " occurred at: ");
+                timeStamp(transType);
+                }
+                else {console.log(chalk.red("\nOperation Failed: Not enough funds to withdraw amount."))}
+
               break;
 
             case '4':
@@ -136,11 +148,12 @@ module.exports = {
               break;
 
             case '5':
-              console.log(loggedAccount);
+              console.log(chalk.yellow("| Customer Name: " + loggedAccount.customer.name + " | Customer Address: " + loggedAccount.customer.address + " | Customer Phone Number: " + loggedAccount.customer.phone + " | Customer ID: " + loggedAccount.customer.ID + " | Customer Password: " + loggedAccount.customer.password));
+              console.log(chalk.yellow("| Customer Savings Account: $" + loggedAccount.savingAccount.amount));
               break;
             
             case '6':
-              console.log("\nEnter '2' to sign out: ")
+              console.log(chalk.cyan("\nEnter '2' to sign out: "));
               break;
           }
 

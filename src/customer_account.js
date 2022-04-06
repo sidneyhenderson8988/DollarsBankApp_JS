@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 var timeStamps = [];
 
 module.exports = {
@@ -16,11 +17,11 @@ module.exports = {
     },
 
     print5Stamps: function () {
-        console.log("\n*****Five most recent transactions*****")
+        console.log(chalk.magenta("\n*****Five most recent transactions*****\n"))
         var count = 0;
 		for (var i = timeStamps.length; i-- > 0;) {
 
-			console.log(timeStamps[i] + "\n");
+			console.log(chalk.magenta(timeStamps[i] + "\n"));
 			count++;
 			if (count == 5) {
 				break;

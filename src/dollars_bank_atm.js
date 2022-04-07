@@ -139,7 +139,7 @@ module.exports = {
                 var transType = chalk.green("Transferred $" + transAmount + " to " + transCust.customer.ID + " occurred at: ");
                 timeStamp(transType);
                 }
-                else {console.log(chalk.red("\nOperation Failed: Not enough funds to withdraw amount."))}
+                else {console.log(chalk.red("\nOperation Failed: Not enough funds to transfer amount."))}
 
               break;
 

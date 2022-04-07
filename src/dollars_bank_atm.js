@@ -20,8 +20,8 @@ module.exports = {
         var custPass = prompt(chalk.blue("Enter Customer Password (8 character minimum With Lower, Upper, & Special): "));
         if(!regex.test(custPass))
         do{
-          console.log("Password does not meet criteria, please try again.")
-          custPass = prompt("Enter Customer Password (8 character minimum With Lower, Upper, & Special): ");
+          console.log(chalk.red("Password does not meet criteria, please try again."))
+          custPass = prompt(chalk.blue("Enter Customer Password (8 character minimum With Lower, Upper, & Special): "));
         }while(!regex.test(custPass))
 
         const amount = parseFloat(prompt(chalk.blue("Enter Initial Amount: ")));

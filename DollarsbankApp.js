@@ -37,4 +37,4 @@ switch(menuChoice) {
 }
 }while(again);
 
-console.log(chalk.green("Program has ended, goodbye!"));
+console.log(chalk.red("Program has ended, goodbye!"));
